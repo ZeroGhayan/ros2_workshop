@@ -32,7 +32,7 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Bridge cmd_vel
+    # Bridges de sensores e tópicos
     bridge_cmd_vel = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -40,7 +40,6 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Bridge imu
     bridge_imu = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -48,7 +47,6 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Bridge lidar 2-D view
     bridge_lidar = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -56,7 +54,6 @@ def generate_launch_description():
         output='screen'
     )
     
-    # Bridge lidar_distance - 1D
     bridge_lidar_avg = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -64,7 +61,6 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Bridge camera
     bridge_camera_image = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -72,17 +68,33 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Bridge odom
     bridge_odom = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=['/odom@nav_msgs/msg/Odometry@ignition.msgs.Odometry'],
         output='screen'
     )
+
     
-    # Clock simulado — FUNDAMENTAL para timers com use_sim_time
+    bridge_gps = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/gps/fix@sensor_msgs/msg/NavSatFix@ignition.msgs.NavSat'],
+        output='screen'
+    )
+    
+    bridge_gps_pose = Node(
+    package='ros_gz_bridge',
+    executable='parameter_bridge',
+    arguments=['/model/vehicle_blue/link/gps_link/pose@geometry_msgs/msg/PoseStamped@ignition.msgs.Pose'],
+    output='screen'
+    )
+
+    
+    # Clock simulado — necessário para sincronização de tempo
     bridge_clock = Node(
-        package='ros_gz_bridge', executable='parameter_bridge',
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
         arguments=['/clock@rosgraph_msgs/msg/Clock@ignition.msgs.Clock'],
         output='screen'
     )
@@ -110,7 +122,6 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Static TF: vehicle_blue/base_link -> base_link
     static_tf_base_link = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
@@ -125,7 +136,6 @@ def generate_launch_description():
         output='screen'
     )
     
-     # Nav2 bringup node com parâmetro
     nav2_bringup = Node(
         package='nav2_bringup',
         executable='nav2_bringup',
@@ -133,6 +143,7 @@ def generate_launch_description():
         output='screen',
         parameters=[nav2_params_file]
     )
+    
     
     return LaunchDescription([
         gazebo,
@@ -143,11 +154,11 @@ def generate_launch_description():
         bridge_lidar_avg,
         bridge_camera_image,
         bridge_odom,
+        bridge_gps,
         bridge_vehicle_tf,
         bridge_vehicle_tf_static,
         static_tf_odom,
-    	static_tf_base_link,
-    	static_tf_map,
-    	bridge_clock,
+        static_tf_base_link,
+        static_tf_map,
+        bridge_clock,
     ])
-
